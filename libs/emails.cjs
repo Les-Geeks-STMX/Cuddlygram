@@ -1,12 +1,9 @@
-var sendmail = require('sendmail')();
+const sendmail = require('sendmail')();
+const db = require('./database.cjs')
+const ejs = require('ejs')
+const fs = require('fs-extra')
+const path = require('path')
 
-sendmail({
-  from: 'myad...@somewhere.com',
-  to: 'a...@a.com,b...@b.com,c...@c.com',
-  subject: 'The subject',
-  type: 'text/html',
-  content: '<h3>hello</h3><p>Hey guys</p>'
-})
 
 function sendMail(to, subject, content, from = 'no-reply') {
   return new Promise((resolve, reject) => {
@@ -17,9 +14,31 @@ function sendMail(to, subject, content, from = 'no-reply') {
       subject,
       type: 'text/html',
       content
-    }, function(err, reply) {
+    }, function (err, reply) {
       if (err) reject(err)
       resolve(reply)
     })
   })
+}
+
+async function verifyEmails(email) {
+  // Check if it hasn't been verified yet.
+  let user = await db.database.users.findOne({ 'auth.email.data': email, 'auth.email.verified': false });
+  if (!user) return { error: true, code: 'NO_EMAIL_FOUND' }
+
+  let token = crypto.randomBytes(256).toString('hex')
+
+  user.actions.push({
+    name: 'EMAIL_VERIFICATION',
+    id: token
+  })
+
+  await user.save()
+
+  let file = fs.readFileSync(path.join(__dirname, `../mails/verification.ejs`))
+  let html = ejs.render(file, {
+    verifUrl: `https://cuddlygram.tk/account/emailVerify?token=${encodeURIComponent(token)}`
+  })
+
+  sendMail(email, `Cuddlygram • Email verification`, html)
 }

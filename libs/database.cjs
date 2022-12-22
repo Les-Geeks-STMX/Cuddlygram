@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
+const crypto = require('crypto');
 const crypto = require('node:crypto')
 const { json } = require('body-parser')
 mongoose.connect(process.env.DATABASE_URI || 'mongodb://localhost:27017/cuddlygram')
@@ -78,7 +79,25 @@ const usersShema = new mongoose.Schema({
         type: String
       }
     }
-  }
+  },
+  actions: [{
+    id: {
+      type:String,
+      default: () => crypto.randomBytes(256).toString('ascii')
+    },
+    name: {
+      type:String
+    },
+    data: {
+      type: mongoose.SchemaTypes.Array
+    },
+    status: {
+      type: Number,
+      // 0XX = Error, 1XX = En cours, 2XX = Fini
+      default: 100
+    },
+    default: () => new Date()
+  }]
 })
 const users = mongoose.model('users', usersShema)
 
@@ -221,6 +240,10 @@ async function createAccount(email, name, firstname, username, password, birthDa
 }
 
 module.exports = {
+  database: {
+    users,
+    logs
+  },
   authenticationCheck,
   autorizeLogin,
   isEmailFree,

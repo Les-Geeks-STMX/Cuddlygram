@@ -11,10 +11,10 @@
         background-color: darkslategray;
       }
       .round {
-        border-radius: 5px;
+        border-radius: 10px;
       }
       .xround {
-        border-radius: 15px;
+        border-radius: 25px;
       }
       .classic {
         background-color: rgb(47, 47, 47);
@@ -22,24 +22,40 @@
         font-family: 'Courier New', Courier, monospace;
         font-size: 14px;
       }
+      .link-dark {
+        color: rgb(122, 223, 198)
+      }
     </style>
     <style>
       h1 {
         position: relative;
         top: 35px;
         left: 15px;
+        font-size: 54px;
         margin-bottom: 50px;
       }
       p {
+        color: antiquewhite;
         position: relative;
         left: 15px;
       }
-      a {
+      .button {
         position: relative;
         top: 45px;
         left: 35px;
         margin: 15px;
-        padding-top: 50px;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        padding-left: 20px;
+        padding-right: 20px;
+        text-align: center;
+        vertical-align: center;
+        text-decoration: none;
+      }
+      footer {
+        position: absolute;
+        bottom: 10px;
+        right: 15px;
       }
     </style>
   </head>
@@ -49,8 +65,11 @@
         Veuillez vérifier votre e-mail.
       </h1>
       <p>Cet e-mail automatique vous a été envoyé pour que vous vérifiez l'appartenence de cette adresse.</p></br>
-      <p>Si vous ne vous êtes pas inscri au services Cuddlygram, contactez imédiatement <a href="mailto:admin@cuddlygram.tk"></a></p></br>
-      <a href="<%= verifUrl %>"><button class="xround classic">Vérifier l'e-mail</button></a>
+      <p>Si vous ne vous êtes pas inscri au services Cuddlygram, contactez imédiatement <a class="link-dark" href="mailto:admin@cuddlygram.tk">admin@cuddlygram.tk</a></p></br>
+      <a href="<%= verifUrl %>" class="xround classic button">Vérifier l'e-mail</a>
+      <footer>
+        CuddlyGram by Clifton Reid
+      </footer>
     </div>
   </body>
 </html>
