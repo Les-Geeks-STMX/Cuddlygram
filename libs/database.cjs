@@ -12,11 +12,15 @@ const usersShema = new mongoose.Schema({
     firstName: {
       type: String
     },
+    userName: {
+      type: String
+    },
     birthDate: {
       type: Date
     },
     bio: {
-      type: String
+      type: String,
+      default: "",
     }
   },
   social: {
@@ -58,6 +62,13 @@ const usersShema = new mongoose.Schema({
     }
   },
   systemStatus: {
+    teams: {
+      memberOf: {
+        type: Number,
+        default: 0
+        // 0=User, 1=Moderator, 2=Administrator
+      }
+    },
     recover: {
       enabled: {
         type: Boolean,
@@ -160,7 +171,59 @@ async function autorizeLogin(email, password) {
     user: user, bcrypt
   };
 }
+async function isEmailFree (email) {
+  const user = await users.findOne({ 'auth.email': email });
+  return user == null;
+}
+async function isUsernameFree (username) {
+  const user = await users.findOne({ 'infos.userName': username });
+  return user == null;
+}
 
 async function createAccount(email, name, firstname, username, password, birthDate) {
+  // Check if the email is already in use
+  if (await users.findOne({ 'auth.email.data': email })) {
+    // The email is already in use
+    return { error: true, code: 'EMAIL_TAKEN' };
+  }
 
+  // Check if the username is already in use
+  if (await users.findOne({ 'infos.userName': username })) {
+    // The username is already in use
+    return { error: true, code: 'USERNAME_TAKEN' };
+  }
+
+  // Hash the password using bcrypt
+  const hash = bcrypt.hashSync(password, 15);
+
+  // Create a new user object
+  const newUser = {
+    infos: {
+      name,
+      firstName: firstname,
+      userName: username,
+      birthDate
+    },
+    auth: {
+      email: {
+        data: email,
+        verified: true
+      },
+      password: hash
+    }
+  };
+
+  // Save the new user to the database
+  const user = await new users(newUser).save();
+
+  // Return the new user object
+  return user;
+}
+
+module.exports = {
+  authenticationCheck,
+  autorizeLogin,
+  isEmailFree,
+  isUsernameFree,
+  createAccount
 }

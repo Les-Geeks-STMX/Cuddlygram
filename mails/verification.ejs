@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      .container {
+        position: absolute;
+        left: 25px;
+        right: 25px;
+        top: 25px;
+        bottom: 25px;
+        background-color: darkslategray;
+      }
+      .round {
+        border-radius: 5px;
+      }
+      .xround {
+        border-radius: 15px;
+      }
+      .classic {
+        background-color: rgb(47, 47, 47);
+        color: antiquewhite;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 14px;
+      }
+    </style>
+    <style>
+      h1 {
+        position: relative;
+        top: 35px;
+        left: 15px;
+        margin-bottom: 50px;
+      }
+      p {
+        position: relative;
+        left: 15px;
+      }
+      a {
+        position: relative;
+        top: 45px;
+        left: 35px;
+        margin: 15px;
+        padding-top: 50px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="round container">
+      <h1>
+        Veuillez vérifier votre e-mail.
+      </h1>
+      <p>Cet e-mail automatique vous a été envoyé pour que vous vérifiez l'appartenence de cette adresse.</p></br>
+      <p>Si vous ne vous êtes pas inscri au services Cuddlygram, contactez imédiatement <a href="mailto:admin@cuddlygram.tk"></a></p></br>
+      <a href="<%= verifUrl %>"><button class="xround classic">Vérifier l'e-mail</button></a>
+    </div>
+  </body>
+</html>
